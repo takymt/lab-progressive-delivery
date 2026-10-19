@@ -1,9 +1,7 @@
 "use strict";
 
 const { OpenFeature } = require("@openfeature/server-sdk");
-const {
-  UnleashProvider,
-} = require("@unleash/openfeature-node-provider");
+const { UnleashProvider } = require("@unleash/openfeature-node-provider");
 
 const client = OpenFeature.getClient();
 
@@ -23,17 +21,12 @@ function getUnleashConfig() {
 }
 
 async function initializeFlags() {
-  const config = getUnleashConfig();
-
-  // TODO: Construct the supplied Unleash provider with config and register it
-  // with OpenFeature, waiting until its initial flag data is ready.
-  void config;
+  const provider = new UnleashProvider(getUnleashConfig());
+  await OpenFeature.setProviderAndWait(provider);
 }
 
 async function getNewFlow() {
-  // TODO: Evaluate lab06-new-flow through the OpenFeature client with the safe
-  // boolean default required by the lab.
-  return false;
+  return await client.getBooleanValue("lab06-new-flow", false);
 }
 
 async function shutdownFlags() {
